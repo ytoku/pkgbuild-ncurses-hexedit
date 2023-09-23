@@ -1,0 +1,37 @@
+From: LaMont Jones <lamont@debian.org>
+Date: Mon, 9 Jul 2001 21:39:34 -0600
+Subject: Fix printf-is-a-macro issue (gcc 3.0).
+
+Description: Fix printf-is-a-macro issue (gcc 3.0).
+Author: LaMont Jones <lamont@debian.org>
+Bug-Debian: https://bugs.debian.org/103155
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+---
+ src/misc.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/src/misc.c b/src/misc.c
+index 86f779c..d4bc0f7 100644
+--- a/src/misc.c
++++ b/src/misc.c
+@@ -382,7 +382,8 @@ cursor_ascii_to_ebcdic (int cur)
+ void
+ usage (char *prog)
+ {
+-   printf ("[N]Curses Hexedit %s by Adam Rogoyski <apoc@laker.net>\n" \
++   char *usage;
++   usage = "[N]Curses Hexedit %s by Adam Rogoyski <apoc@laker.net>\n" \
+      "Copyright (C) 1998, 1999 Adam Rogoyski\n" \
+      "This is free software; see the source for copying conditions.\n" \
+      "There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A\n" \
+@@ -402,7 +403,8 @@ usage (char *prog)
+      "  -n, --nocolor           Force Gray scale, no colors.\n"
+      "  -q, --quiet             Quiet Mode, No annoying beeping\n"
+      "  -r, --readonly          Do not modifying of the file.\n"
+-     "  -v, --version           Print the version number and exit.\n",
++     "  -v, --version           Print the version number and exit.\n";
++  printf(usage,
+      VERSION, prog);
+ }
+ 

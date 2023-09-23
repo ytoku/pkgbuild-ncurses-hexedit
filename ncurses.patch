@@ -1,0 +1,25 @@
+Author: Reiner Herrmann <reiner@reiner-h.de>
+Bug-Debian: https://bugs.debian.org/997184
+
+--- a/src/init.c
++++ b/src/init.c
+@@ -385,7 +388,7 @@
+          box (wpopup, 0, 0);
+          wmove (wpopup, 1, (FILE_ERR_WIDTH / 2)
+                  - (strlen (msg) / 2));
+-         wprintw (wpopup, (char *) msg);
++         wprintw (wpopup, "%s", (char *) msg);
+          wmove (wpopup, FILE_ERR_HEIGHT - 3, (FILE_ERR_WIDTH / 2) -
+                 (strlen (strerror (errno)) + strlen ("Reason: ")) / 2);
+          wprintw (wpopup, "Reason: %s", 
+--- a/src/widgets.c
++++ b/src/widgets.c
+@@ -366,7 +368,7 @@
+    if (!rstr.str)
+    {
+       wmove (win, 4, boxleft);
+-      wprintw (win, (char *) NOT_ENOUGH_MEMORY);
++      wprintw (win, "%s", (char *) NOT_ENOUGH_MEMORY);
+       getch ();
+       return NULL;
+    }

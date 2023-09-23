@@ -1,0 +1,112 @@
+From: "Adam F. Rogoyski" <rogoyski@debian.org>
+Date: Sun, 26 May 2002 21:03:13 -0500
+Subject: Allow white space in file names.
+
+Description: Allow white space in file names.
+ * Fix stringBox widget to treat all white space as significant.
+ * Allow saving files with spaces in them.
+Author: Adam F. Rogoyski <rogoyski@debian.org>
+Bug-Debian: https://bugs.debian.org/147229
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+---
+ src/widgets.c | 20 +++++++++-----------
+ src/windows.c | 15 +++++----------
+ 2 files changed, 14 insertions(+), 21 deletions(-)
+
+diff --git a/src/widgets.c b/src/widgets.c
+index 0a7a484..d597d46 100644
+--- a/src/widgets.c
++++ b/src/widgets.c
+@@ -62,22 +62,20 @@ stringBox (WINDOW *win, int y, int x, int len, int max, char *sample)
+ 
+    wmove (win, y, x);
+    wattrset (win, color_term ? S_BOX_COLOR : A_REVERSE);
+-   str = malloc (len + 2);
++   str = malloc (len + 1);
+    if (!str)
+    {
+ /*      fprintf (stderr, "%s - StringBox\n", NOT_ENOUGH_MEMORY); */
+       popup_Error (NOT_ENOUGH_MEMORY, 0);
+       return NULL;
+    }
+-   *(str + len + 1) = '\0';
+-   memset (str, ' ', len + 1);
+-   strncpy (str, sample ? sample : "", samplelen);
++   memset (str, 0, len + 1);
++   if (sample)
++      strncpy (str, sample, samplelen);
+    for (i = 0; i < max; i++)
+    {
+-      if (*(str + i) && (i < max))
+-      {
++      if (*(str + i))
+          wprintw (win, "%c", *(str + i));
+-      }
+       else
+          wprintw (win, " ");
+    }
+@@ -170,10 +168,10 @@ stringBox (WINDOW *win, int y, int x, int len, int max, char *sample)
+                {
+                   i--;
+                   for (n = strlen (str); n < len; n++)
+-                     *(str + n) = ' ';
++                     *(str + n) = 0;
+                   for (n = i; n < len; n++)
+                      *(str + n) = *(str + n + 1);
+-                  *(str + n) = ' ';
++                  *(str + n) = 0;
+                   oldx = win->_curx;
+                   wmove (win, y, x);
+                   for (n = left; n <= right; n++)
+@@ -220,7 +218,7 @@ stringBox (WINDOW *win, int y, int x, int len, int max, char *sample)
+                   *(str + n) = *(str + n - 1);
+                }
+                *(str + i) = ' ';
+-               *(str + len) = ' ';
++               *(str + len) = 0;
+                i++;
+                wmove (win, y, x);
+                for (n = left; n <= right; n++)
+@@ -240,7 +238,7 @@ stringBox (WINDOW *win, int y, int x, int len, int max, char *sample)
+                   *(str + n) = *(str + n - 1);
+                }
+                *(str + i) = ' ';
+-               *(str + len) = ' ';
++               *(str + len) = 0;
+                i++;
+                if (right < len - 1)
+                {
+diff --git a/src/windows.c b/src/windows.c
+index 25d711d..d66e05a 100644
+--- a/src/windows.c
++++ b/src/windows.c
+@@ -253,7 +253,7 @@ popupFileSave (void)
+    filename = stringBox (wpopup, 3, 2 + strlen ("Filename: "), 
+                       FILE_SAVE_STRING_BOX_MAX,
+                       FILE_SAVE_STRING_BOX, (char *) Globals.filename);
+-   chompWhiteSpace (filename);
++/*   chompWhiteSpace (filename); */
+ 
+    if (!filename);
+    else if (!*filename)
+@@ -635,15 +635,10 @@ search (int findnext)
+                          SEARCH_STRING_BOX, NULL);
+       s = (unsigned char *) str;
+       laststr = s;
+-      for (str = s + SEARCH_STRING_BOX_MAX - 1; str != (s - 1); str--)
+-      {
+-         if (*str != ' ')
+-         {
+-            *(str + 1) = '\0';
+-            done = 1;
+-            break;
+-         }
+-      }
++
++      if (*s)
++         done = 1;
++
+       if (Globals.charset == EBCDIC_CHAR_SET)
+       {
+          unsigned char *p = s;

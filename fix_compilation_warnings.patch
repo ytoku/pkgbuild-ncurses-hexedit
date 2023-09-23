@@ -1,0 +1,66 @@
+From: Carlos Maddela <e7appew@gmail.com>
+Date: Mon, 8 Jan 2018 13:57:32 +1100
+Subject: Fix compilation warnings.
+
+Description: Fix compilation warnings.
+Author: Carlos Maddela <e7appew@gmail.com>
+Last-Update: 2018-01-08
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+---
+ src/file.c    |  4 +++-
+ src/hexkeys.c | 10 +++++-----
+ src/windows.c |  4 +++-
+ 3 files changed, 11 insertions(+), 7 deletions(-)
+
+diff --git a/src/file.c b/src/file.c
+index c335710..5960537 100644
+--- a/src/file.c
++++ b/src/file.c
+@@ -70,7 +70,9 @@ fileSelect ()
+    memset (dir, 0x00, PATH_MAX + 1);
+    memset (previous_dir, 0x00, PATH_MAX + 1);
+ 
+-   getcwd (previous_dir, PATH_MAX);
++   p = getcwd (previous_dir, PATH_MAX);
++   if (!p)
++      die_horribly (NULL, "getcwd");
+ 
+    while (1)
+    {
+diff --git a/src/hexkeys.c b/src/hexkeys.c
+index b4e165d..a2d3d25 100644
+--- a/src/hexkeys.c
++++ b/src/hexkeys.c
+@@ -912,11 +912,11 @@ pagedown (void)
+          cursor_y = BOTTOM_LINE;
+       else
+          cursor_y = ((Globals.filesize & M_0xF0) >> 4) + MAIN_BOTTOM_LINE;
+-         offset = Globals.filesize;
+-         if (mapcur (cursor_x) < (offset & M_0x0F))
+-            offset = (offset & M_0xFFFFFFF0) + mapcur (cursor_x);
+-         else if (mapcur (cursor_x) > (offset & M_0x0F))
+-            cursor_x = mappos (offset & M_0x0F);
++      offset = Globals.filesize;
++      if (mapcur (cursor_x) < (offset & M_0x0F))
++         offset = (offset & M_0xFFFFFFF0) + mapcur (cursor_x);
++      else if (mapcur (cursor_x) > (offset & M_0x0F))
++         cursor_x = mappos (offset & M_0x0F);
+    }
+    offset += (MAIN_BOTTOM_LINE) * M_0x10;
+    if (offset > Globals.filesize)
+diff --git a/src/windows.c b/src/windows.c
+index f64b790..4c211c8 100644
+--- a/src/windows.c
++++ b/src/windows.c
+@@ -317,7 +317,9 @@ popupFileSave (void)
+                   len = 0;
+                i += result;
+             }
+-            ftruncate (fileno (fp), Globals.filesize);
++            result = ftruncate (fileno (fp), Globals.filesize);
++            if (result < 0)
++               die_horribly (NULL, "ftruncate");
+          }
+             /* If not, we read it from the old file, make the neccessary
+              * changes, and then write it to the new file (possibly the

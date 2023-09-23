@@ -1,0 +1,258 @@
+From: Carlos Maddela <e7appew@gmail.com>
+Date: Wed, 14 Mar 2018 02:18:18 +1100
+Subject: Fix buffer overruns.
+
+Description: Fix buffer overruns.
+ Fix buffer overruns when program is started without a file name
+ parameter from a terminal with a column width of less than 57
+ characters, or when the terminal is resized to such a width.
+Author: Carlos Maddela <e7appew@gmail.com>
+Bug-Debian: https://bugs.debian.org/535848
+Last-Update: 2018-03-14
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+---
+ src/file.c     |  5 ++---
+ src/filekeys.c | 48 +++++++++++++++++++-----------------------------
+ src/hexedit.h  |  9 +++++++++
+ src/misc.c     |  3 +--
+ 4 files changed, 31 insertions(+), 34 deletions(-)
+
+diff --git a/src/file.c b/src/file.c
+index 5960537..df31c95 100644
+--- a/src/file.c
++++ b/src/file.c
+@@ -128,7 +128,7 @@ fileSelect ()
+       werase (Globals.wmain);
+       werase (Globals.whelp);
+       printPage (*pages);
+-      strncpy (trunc_file, fp->filename, COLS - NAME_POS);
++      copy_filename_truncated (trunc_file, fp->filename);
+       wmove (Globals.wmain, 0, NAME_POS);
+       wattrset (Globals.wmain, color_term ? COLOR_PAIR(2) | A_BOLD
+                                           : A_BOLD);
+@@ -640,8 +640,7 @@ printPage (const struct FileNames *fp)
+             wprintw (Globals.wmain, " ");
+       }
+ 
+-      memset (trunc_file, 0x00, PATH_MAX + 1);
+-      strncpy (trunc_file, fp->filename, COLS - NAME_POS);
++      copy_filename_truncated (trunc_file, fp->filename);
+       wprintw (Globals.wmain, "%s", trunc_file);
+       fp = fp->p;
+ 
+diff --git a/src/filekeys.c b/src/filekeys.c
+index f089810..7df9b4c 100644
+--- a/src/filekeys.c
++++ b/src/filekeys.c
+@@ -35,7 +35,6 @@ file_key_up (int *current_page)
+       else
+       {
+ 	 cursor_y = BOTTOM_LINE;
+-	 memset (trunc_file, 0x00, PATH_MAX + 1);
+ 	 fp = *(pages + --*current_page);
+ 	 while (fp->p != *(pages + *current_page + 1))
+ 	    fp = fp->p;
+@@ -45,7 +44,7 @@ file_key_up (int *current_page)
+ 	 statWindow (fp->filename);
+ 	 wmove (Globals.wmain, cursor_y - MAIN_TOP_LINE,
+ 		NAME_POS);
+-	 strncpy (trunc_file, fp->filename, COLS - NAME_POS);
++	 copy_filename_truncated (trunc_file, fp->filename);
+ 	 wattrset (Globals.wmain, color_term ? COLOR_PAIR(2) | A_BOLD
+                                              : A_BOLD);
+ 	 wprintw (Globals.wmain, "%s", trunc_file);
+@@ -63,13 +62,12 @@ file_key_up (int *current_page)
+ 	 tp = tp->p;
+       wmove (Globals.wmain, cursor_y - MAIN_TOP_LINE,
+ 	     NAME_POS);
+-      strncpy (trunc_file, fp->filename, COLS - NAME_POS);
++      copy_filename_truncated (trunc_file, fp->filename);
+       wattrset (Globals.wmain, color_term ? COLOR_PAIR(1) : A_NORMAL);
+       wprintw (Globals.wmain, "%s", trunc_file);
+       cursor_y--;
+       fp = tp;
+-      memset (trunc_file, 0x00, PATH_MAX + 1);
+-      strncpy (trunc_file, fp->filename, COLS - NAME_POS);
++      copy_filename_truncated (trunc_file, fp->filename);
+       wmove (Globals.wmain, cursor_y - MAIN_TOP_LINE,
+ 	     NAME_POS);
+       wattrset (Globals.wmain, color_term ? COLOR_PAIR(2) | A_BOLD
+@@ -102,7 +100,7 @@ file_key_down (int *current_page, int n)
+ 	 wmove (Globals.wmain, 0, NAME_POS);
+ 	 wattrset (Globals.wmain, color_term ? COLOR_PAIR(2) | A_BOLD
+                                              : A_BOLD);
+-	 strncpy (trunc_file, fp->filename, COLS - NAME_POS);
++	 copy_filename_truncated (trunc_file, fp->filename);
+ 	 wprintw (Globals.wmain, "%s", trunc_file);
+ 	 wattroff (Globals.wmain, color_term ? COLOR_PAIR(2) | A_BOLD
+                                              : A_BOLD);
+@@ -129,13 +127,12 @@ file_key_down (int *current_page, int n)
+       {
+ 	 wmove (Globals.wmain, cursor_y - MAIN_TOP_LINE,
+ 		NAME_POS);
+-	 strncpy (trunc_file, fp->filename, COLS - NAME_POS);
++	 copy_filename_truncated (trunc_file, fp->filename);
+          wattrset (Globals.wmain, color_term ? COLOR_PAIR(1) : A_NORMAL);
+ 	 wprintw (Globals.wmain, "%s", trunc_file);
+ 	 cursor_y++;
+ 	 fp = fp->p;
+-	 memset (trunc_file, 0x00, PATH_MAX + 1);
+-	 strncpy (trunc_file, fp->filename, COLS - NAME_POS);
++	 copy_filename_truncated (trunc_file, fp->filename);
+ 	 wmove (Globals.wmain, cursor_y - MAIN_TOP_LINE,
+ 		NAME_POS);
+ 	 wattrset (Globals.wmain, color_term ? COLOR_PAIR(2) | A_BOLD
+@@ -168,7 +165,7 @@ file_redraw (int *current_page)
+    wmove (Globals.wmain, cursor_y - MAIN_TOP_LINE, NAME_POS);
+    wattrset (Globals.wmain, color_term ? COLOR_PAIR(2) | A_BOLD
+                                        : A_BOLD);
+-   strncpy (trunc_file, fp->filename, COLS - NAME_POS);
++   copy_filename_truncated (trunc_file, fp->filename);
+    wprintw (Globals.wmain, "%s", trunc_file);
+    wattroff (Globals.wmain, color_term ? COLOR_PAIR(2) | A_BOLD
+                                        : A_BOLD);
+@@ -202,15 +199,14 @@ file_pagedown (int *current_page, int n)
+       wmove (Globals.wmain, cursor_y - MAIN_TOP_LINE, NAME_POS);
+       wattrset (Globals.wmain, color_term ? COLOR_PAIR(2) | A_BOLD
+                                           : A_BOLD);
+-      strncpy (trunc_file, fp->filename, COLS - NAME_POS);
++      copy_filename_truncated (trunc_file, fp->filename);
+       wprintw (Globals.wmain, "%s", trunc_file);
+       wattroff (Globals.wmain, color_term ? COLOR_PAIR(2) | A_BOLD
+                                           : A_BOLD);
+    }
+    else
+    {
+-      memset (trunc_file, 0x00, PATH_MAX + 1);
+-      strncpy (trunc_file, fp->filename, COLS - NAME_POS);
++      copy_filename_truncated (trunc_file, fp->filename);
+       wmove (Globals.wmain, cursor_y - MAIN_TOP_LINE, NAME_POS);
+       wattrset (Globals.wmain, color_term ? COLOR_PAIR(1) : A_NORMAL);
+       wprintw (Globals.wmain, "%s", trunc_file);
+@@ -222,8 +218,7 @@ file_pagedown (int *current_page, int n)
+          cursor_y++;
+          fp = fp->p;
+       }
+-      memset (trunc_file, 0x00, PATH_MAX + 1);
+-      strncpy (trunc_file, fp->filename, COLS - NAME_POS);
++      copy_filename_truncated (trunc_file, fp->filename);
+       wmove (Globals.wmain, cursor_y - MAIN_TOP_LINE, NAME_POS);
+       wattrset (Globals.wmain, color_term ? COLOR_PAIR(2) | A_BOLD
+                                           : A_BOLD);
+@@ -255,7 +250,7 @@ file_pageup (int *current_page)
+       werase (Globals.wmain);
+       printPage (*(pages + *current_page));
+       statWindow (fp->filename);
+-      strncpy (trunc_file, fp->filename, COLS - NAME_POS);
++      copy_filename_truncated (trunc_file, fp->filename);
+       wmove (Globals.wmain, cursor_y - MAIN_TOP_LINE, NAME_POS);
+       wattrset (Globals.wmain, color_term ? COLOR_PAIR(2) | A_BOLD
+                                           : A_BOLD);
+@@ -265,16 +260,14 @@ file_pageup (int *current_page)
+    }
+    else
+    {
+-      memset (trunc_file, 0x00, PATH_MAX + 1);
+-      strncpy (trunc_file, fp->filename, COLS - NAME_POS);
++      copy_filename_truncated (trunc_file, fp->filename);
+       wmove (Globals.wmain, cursor_y - MAIN_TOP_LINE, NAME_POS);
+       wattrset (Globals.wmain, color_term ? COLOR_PAIR(1) : A_NORMAL);
+       wprintw (Globals.wmain, "%s", trunc_file);
+ 
+       cursor_y = MAIN_TOP_LINE;
+       fp = *pages;
+-      memset (trunc_file, 0x00, PATH_MAX + 1);
+-      strncpy (trunc_file, fp->filename, COLS - NAME_POS);
++      copy_filename_truncated (trunc_file, fp->filename);
+       wmove (Globals.wmain, cursor_y - MAIN_TOP_LINE, NAME_POS);
+       wattrset (Globals.wmain, color_term ? COLOR_PAIR(2) | A_BOLD
+                                           : A_BOLD);
+@@ -304,7 +297,7 @@ file_home (int *current_page)
+       fp = *pages;
+       statWindow (fp->filename);
+       printPage (*pages);
+-      strncpy (trunc_file, fp->filename, COLS - NAME_POS);
++      copy_filename_truncated (trunc_file, fp->filename);
+       wmove (Globals.wmain, cursor_y - MAIN_TOP_LINE,
+ 	     NAME_POS);
+       wattrset (Globals.wmain, color_term ? COLOR_PAIR(2) | A_BOLD
+@@ -317,13 +310,13 @@ file_home (int *current_page)
+    else
+       /* already on first page */
+    {
+-      strncpy (trunc_file, fp->filename, COLS - NAME_POS);
++      copy_filename_truncated (trunc_file, fp->filename);
+       wmove (Globals.wmain, cursor_y - MAIN_TOP_LINE,
+ 	     NAME_POS);
+       wattrset (Globals.wmain, color_term ? COLOR_PAIR(1) : A_NORMAL);
+       wprintw (Globals.wmain, "%s", trunc_file);
+       fp = *pages;
+-      strncpy (trunc_file, fp->filename, COLS - NAME_POS);
++      copy_filename_truncated (trunc_file, fp->filename);
+       cursor_y = MAIN_TOP_LINE;
+       wmove (Globals.wmain, cursor_y - MAIN_TOP_LINE,
+ 	     NAME_POS);
+@@ -359,8 +352,7 @@ file_end (int *current_page, int n)
+          fp = fp->p;
+       }
+       printPage (*(pages + *current_page));
+-      memset (trunc_file, 0x00, PATH_MAX + 1);
+-      strncpy (trunc_file, fp->filename, COLS - NAME_POS);
++      copy_filename_truncated (trunc_file, fp->filename);
+       wmove (Globals.wmain, cursor_y - MAIN_TOP_LINE,
+ 	     NAME_POS);
+       wattrset (Globals.wmain, color_term ? COLOR_PAIR(2) | A_BOLD
+@@ -371,8 +363,7 @@ file_end (int *current_page, int n)
+    }
+    else
+    {
+-      memset (trunc_file, 0x00, PATH_MAX + 1);
+-      strncpy (trunc_file, fp->filename, COLS - NAME_POS);
++      copy_filename_truncated (trunc_file, fp->filename);
+       wmove (Globals.wmain, cursor_y - MAIN_TOP_LINE,
+ 	     NAME_POS);
+       wattrset (Globals.wmain, color_term ? COLOR_PAIR(1) : A_NORMAL);
+@@ -386,8 +377,7 @@ file_end (int *current_page, int n)
+       }
+       wattrset (Globals.wmain, color_term ? COLOR_PAIR(2) | A_BOLD
+                                           : A_BOLD);
+-      memset (trunc_file, 0x00, PATH_MAX + 1);
+-      strncpy (trunc_file, fp->filename, COLS - NAME_POS);
++      copy_filename_truncated (trunc_file, fp->filename);
+       wmove (Globals.wmain, cursor_y - MAIN_TOP_LINE,
+              NAME_POS);
+       wprintw (Globals.wmain, "%s", trunc_file);
+diff --git a/src/hexedit.h b/src/hexedit.h
+index d60e89c..22e5d6b 100644
+--- a/src/hexedit.h
++++ b/src/hexedit.h
+@@ -427,5 +427,14 @@ struct calcEntryBox
+    } value;
+ };
+ 
++#define copy_filename_truncated(dst, src) \
++   do \
++   { \
++      memset (dst, 0x00, sizeof (dst)); \
++      strncpy (dst, src, \
++         (COLS > NAME_POS) ? (((COLS - NAME_POS) < sizeof (dst)) ? (COLS - NAME_POS) \
++                                                                 : (sizeof (dst) - 1)) \
++                           : 0); \
++   } while (0)
+ 
+ #endif
+diff --git a/src/misc.c b/src/misc.c
+index 9ca0be3..4768b3f 100644
+--- a/src/misc.c
++++ b/src/misc.c
+@@ -709,8 +709,7 @@ handleSigwinch (int i)
+       wrefresh (Globals.wstatus);
+       wrefresh (Globals.whelp);
+       printPage (*(pages + current_page));
+-      memset (trunc_file, 0x00, PATH_MAX + 1);
+-      strncpy (trunc_file, fp->filename, COLS - NAME_POS);
++      copy_filename_truncated (trunc_file, fp->filename);
+       wmove    (Globals.wmain, cursor_y - MAIN_TOP_LINE, NAME_POS);
+       wattrset (Globals.wmain, A_BOLD);
+       wprintw  (Globals.wmain, "%s", trunc_file);

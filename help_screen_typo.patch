@@ -1,0 +1,26 @@
+From: Matej Vela <vela@debian.org>
+Date: Fri, 27 Apr 2007 16:48:49 +0200
+Subject: Fix typo in help screen.
+
+Description: Fix typo in help screen.
+Author: Matej Vela <vela@debian.org>
+Bug-Debian: https://bugs.debian.org/291656
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+---
+ src/help.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/help.c b/src/help.c
+index 8752153..61e62c5 100644
+--- a/src/help.c
++++ b/src/help.c
+@@ -23,7 +23,7 @@
+ 
+    /* The help messages used with the online help screen. */
+ const char *help_msgs[] = {
+- "Maneuver            Arror Keys (or h,j,k,l), Home, End",
++ "Maneuver            Arrow Keys (or h,j,k,l), Home, End",
+  "Page Up             Control-y, Control-b, Alt-v, Page Up (^Y) (^B) u y",
+  "Page Down           Control-v, Control-f, Page Down (^V) (^F) v space",
+  "Bytes <=> text      Tab, Control-i (^I)",

@@ -1,0 +1,41 @@
+From: "Adam F. Rogoyski" <rogoyski@debian.org>
+Date: Tue, 13 Mar 2001 13:54:30 -0600
+Subject: Add hexedit.lsm from linux software map to docs.
+
+Description: Add hexedit.lsm from linux software map to docs.
+Author: Adam F. Rogoyski <rogoyski@debian.org>
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+---
+ hexedit.lsm | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+ create mode 100644 hexedit.lsm
+
+diff --git a/hexedit.lsm b/hexedit.lsm
+new file mode 100644
+index 0000000..7a2ade0
+--- /dev/null
++++ b/hexedit.lsm
+@@ -0,0 +1,22 @@
++Begin3
++Title:          [N]curses Hexedit
++Version:        0.9.7
++Entered-date:   08AUG99
++Description:    Hexedit is an editor which allows editing and viewing of
++                a file or disk in hexadecimal, along with its ASCII
++                or EBCDIC text equivalent.  Standard editing features
++                include insert, delete, search (text or byte searches),
++                highlighted changes, undo, two different viewing formats,
++                base converter, and full screen text snapshots.  Editing
++                fixed disks (i.e. /dev/hda) in Linux and OpenBSD is supported.
++                Color terminals are supported.
++Keywords:       hexedit hex binary disk ASCII EBCDIC editor Linux GNU GPL
++Author:         apoc@laker.net (Adam Rogoyski)
++Maintained-by:  apoc@laker.net (Adam Rogoyski)
++Primary-site:   sunsite.unc.edu /pub/Linux/apps/editors/terminal
++                161 kb hexedit-0.9.7.tar.gz
++                1 kb hexedit.lsm
++Platforms:      Unix like system with curses, DOS with pdcurses
++Copying-policy: GPL
++End
++

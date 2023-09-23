@@ -1,0 +1,45 @@
+From: Manfred Lichtenstern <manfred@lichtenstern.biz>
+Date: Wed, 7 Jan 2009 20:03:22 +0100
+Subject: Remove references to hexedit from man page.
+
+Description: Remove references to hexedit from man page.
+ Should reference hexeditor instead.
+Author: Manfred Lichtenstern <manfred@lichtenstern.biz>
+Bug-Debian: https://bugs.debian.org/510952
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+---
+ docs/hexeditor.1 | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/docs/hexeditor.1 b/docs/hexeditor.1
+index dd66a7a..a560174 100644
+--- a/docs/hexeditor.1
++++ b/docs/hexeditor.1
+@@ -1,14 +1,14 @@
+ .\" Copyright (C) 1998,1999 Adam Rogoyski
+-.TH HEXEDIT 1
++.TH HEXEDITOR 1
+ .SH NAME
+-hexedit \- Full screen curses Hex editor
++hexeditor \- Full screen curses Hex editor
+ .SH SYNOPSIS 
+ .nr a \n(.j
+ .ad l
+ .nr i \n(.i
+ .in +\w'\fBhexedit 'u
+ .ti \niu
+-.B hexedit
++.B hexeditor
+ .de OP
+ .ie \\n(.$-1 .RI "[\ \fB\\$1fP" "\\$2" "\ ]"
+ .el .RB "[\ " "\\$1" "\ ]"
+@@ -18,7 +18,7 @@ hexedit \- Full screen curses Hex editor
+ .br
+ .ad \na
+ .SH DESCRIPTION 
+-.I Hexedit
++.I Hexeditor
+ is an editor to edit binary (or any) files or disks.  The Display consists
+ of the current offset from 0 (the first byte), the next sixteen bytes
+ (aligned by bytes or 32-bit words), and its ASCII or EBCDIC text

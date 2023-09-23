@@ -1,0 +1,29 @@
+From: Carlos Maddela <e7appew@gmail.com>
+Date: Tue, 9 Jan 2018 03:37:26 +1100
+Subject: If started in read-only mode,
+ keep this mode for subsequent files too.
+
+Description: If started in read-only mode, keep this mode for subsequent
+ files too.
+Author: Carlos Maddela <e7appew@gmail.com>
+Last-Update: 2018-01-09
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+---
+ src/misc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/misc.c b/src/misc.c
+index 36e3bb9..9ca0be3 100644
+--- a/src/misc.c
++++ b/src/misc.c
+@@ -565,7 +565,8 @@ handleInterrupt (int i)
+       cursor_y = MAIN_TOP_LINE;
+       cursor_x = 10;
+       offset = 0x00;
+-      Globals.modified = 0;
++      if (Globals.modified != READ_ONLY)
++        Globals.modified = 0;
+       Globals.tabb = 0;
+    }
+    redraw ();

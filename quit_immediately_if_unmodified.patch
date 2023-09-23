@@ -1,0 +1,36 @@
+From: Carlos Maddela <e7appew@gmail.com>
+Date: Tue, 9 Jan 2018 02:36:08 +1100
+Subject: Don't prompt about quitting without saving if file is unmodified.
+
+Description: Don't prompt about quitting without saving if file is unmodified.
+Author: Carlos Maddela <e7appew@gmail.com>
+Bug-Debian: https://bugs.debian.org/652947
+Last-Update: 2018-01-09
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+---
+ src/misc.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/src/misc.c b/src/misc.c
+index d4bc0f7..36e3bb9 100644
+--- a/src/misc.c
++++ b/src/misc.c
+@@ -459,12 +459,16 @@ handleInterrupt (int i)
+              QUIT_BOX_WIDTH / 2 - strlen ("   Really Quit?        ") / 2);
+       wprintw (win, "   Really Quit?        ");
+    }
+-   else
++   else if (Globals.modified == MODIFIED)
+    {
+       wmove (win, 2,
+              QUIT_BOX_WIDTH / 2 - strlen ("Quit without Saving?") / 2);
+       wprintw (win, "Quit without Saving?");
+    }
++   else
++   {
++      exitProgram ();
++   }
+    wmove (win, 4, QUIT_BOX_WIDTH / 2
+           - (strlen (" Yes       No       New File ") / 2));
+    wattrset (win, A_REVERSE);

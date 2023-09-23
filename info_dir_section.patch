@@ -1,0 +1,29 @@
+From: Carlos Maddela <e7appew@gmail.com>
+Date: Mon, 8 Jan 2018 11:34:16 +1100
+Subject: Generate an INFO-DIR-SECTION without ".info" for info file.
+
+Description: Generate an INFO-DIR-SECTION without ".info" for info file.
+Author: Carlos Maddela <e7appew@gmail.com>
+Bug-Debian: https://bugs.debian.org/551671
+Last-Update: 2018-01-08
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+---
+ docs/hexeditor.texi | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/docs/hexeditor.texi b/docs/hexeditor.texi
+index 8cb1d5a..4a77975 100644
+--- a/docs/hexeditor.texi
++++ b/docs/hexeditor.texi
+@@ -4,6 +4,10 @@
+ @settitle Ncurses Hexedit
+ @c %**end of header
+ 
++@dircategory Editors
++@direntry
++* hexeditor: (hexeditor).             Binary ascii/ebcdic terminal hex editor.
++@end direntry
+ 
+ @ifinfo
+ [N]Curses Hexedit Manual

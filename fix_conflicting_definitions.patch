@@ -1,0 +1,45 @@
+From: Carlos Maddela <e7appew@gmail.com>
+Date: Mon, 8 Jan 2018 09:56:27 +1100
+Subject: Fix conflicting definitions of ncurses' WINDOW
+
+Description: Fix conflicting definitions of ncurses' WINDOW
+ by ensuring headers are included in a consistent order, i.e. that
+ config.h or hexedit.h is included first.
+Author: Carlos Maddela <e7appew@gmail.com>
+Bug-Debian: https://bugs.debian.org/701670
+Last-Update: 2018-01-08
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+---
+ src/edit.c | 2 +-
+ src/undo.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/edit.c b/src/edit.c
+index 4f597c6..42cb022 100644
+--- a/src/edit.c
++++ b/src/edit.c
+@@ -12,8 +12,8 @@
+  */
+ 
+ 
+-#include <assert.h>
+ #include "hexedit.h"
++#include <assert.h>
+ 
+ /* The routines in this file are very messy and ugly and not much thought
+  * went into thinking how to minimize the amount of code, I only did it
+diff --git a/src/undo.c b/src/undo.c
+index a1b4f02..030cc47 100644
+--- a/src/undo.c
++++ b/src/undo.c
+@@ -12,8 +12,8 @@
+  */
+ 
+ 
+-#include <assert.h>
+ #include "hexedit.h"
++#include <assert.h>
+ 
+ 
+ void

@@ -1,0 +1,629 @@
+From: Carlos Maddela <e7appew@gmail.com>
+Date: Sat, 29 Dec 2018 22:53:31 +1100
+Subject: Fix spelling errors detected by lintian and mwic.
+
+Description: Fix spelling errors detected by lintian and mwic.
+Author: Carlos Maddela <e7appew@gmail.com>
+Last-Update: 2018-12-29
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+---
+ ChangeLog           |  8 ++++----
+ INSTALL             |  6 +++---
+ README              | 12 ++++++------
+ docs/hexeditor.texi | 34 +++++++++++++++++-----------------
+ src/asciikey.c      |  2 +-
+ src/calc.c          |  2 +-
+ src/calckeys.c      |  2 +-
+ src/edit.c          |  4 ++--
+ src/file.c          |  4 ++--
+ src/filebuf.c       |  2 +-
+ src/filekeys.c      |  2 +-
+ src/hash.c          |  2 +-
+ src/help.c          |  2 +-
+ src/hexedit.h       |  4 ++--
+ src/hexkeys.c       |  6 +++---
+ src/init.c          | 12 ++++++------
+ src/main.c          |  2 +-
+ src/misc.c          |  4 ++--
+ src/print.c         |  2 +-
+ src/search.c        |  2 +-
+ src/undo.c          |  2 +-
+ src/widgets.c       |  6 +++---
+ src/windows.c       |  6 +++---
+ 23 files changed, 64 insertions(+), 64 deletions(-)
+
+diff --git a/ChangeLog b/ChangeLog
+index 60169dc..9e207bb 100644
+--- a/ChangeLog
++++ b/ChangeLog
+@@ -19,15 +19,15 @@
+ 
+ 0.9.6: April 23rd, 1999
+    + Fixed view text mode so that it doesn't wrongfully skip lines.
+-   + Fixed some occurences of "ascii" to "text" to be clearer.
++   + Fixed some occurrences of "ascii" to "text" to be clearer.
+    + Added J/K keys for down/up arrows in search selection and calculator.
+    + Fixed some help messages and menus.
+ 
+ 0.9.5: April 8th, 1999
+-   + Fixed bug with delete, now we truncate the file to the corect size.
++   + Fixed bug with delete, now we truncate the file to the correct size.
+      Thanks to tenthumbs for this obvious one that got past me.
+ 
+-0.9.4: Marth 20th, 1999
++0.9.4: March 20th, 1999
+    + Added OpenBSD disk support.
+    + Fixed man page errors.
+    + Fixed a few unclear messages about insert and delete.
+@@ -39,7 +39,7 @@
+    - Removed Bold Table thingy (table_ functions) to be replaced by hash
+    + Added hash table to lookup changes and boldify things. (hash.c)
+    + Control-U to delete whole line in stringBox widget
+-   + Jumping relative to current offset fowards or backwards.
++   + Jumping relative to current offset forwards or backwards.
+    + Lots of fixes and small changes to make things work right.
+    + Lots and lots of small changes everywhere!
+    + Documentation updates for new features.
+diff --git a/INSTALL b/INSTALL
+index 3ec2203..f1bbf15 100644
+--- a/INSTALL
++++ b/INSTALL
+@@ -41,7 +41,7 @@ The simplest way to compile this package is:
+      `sh ./configure' instead to prevent `csh' from trying to execute
+      `configure' itself.
+ 
+-     Running `configure' takes awhile.  While running, it prints some
++     Running `configure' takes a while.  While running, it prints some
+      messages telling which features it is checking for.
+ 
+   2. Type `make' to compile the package.
+@@ -132,10 +132,10 @@ you can use the `configure' options `--x-includes=DIR' and
+ Specifying the System Type
+ ==========================
+ 
+-   There may be some features `configure' can not figure out
++   There may be some features `configure' cannot figure out
+ automatically, but needs to determine by the type of host the package
+ will run on.  Usually `configure' can figure that out, but if it prints
+-a message saying it can not guess the host type, give it the
++a message saying it cannot guess the host type, give it the
+ `--host=TYPE' option.  TYPE can either be a short name for the system
+ type, such as `sun4', or a canonical name with three fields:
+      CPU-COMPANY-SYSTEM
+diff --git a/README b/README
+index ad8c529..44b1738 100644
+--- a/README
++++ b/README
+@@ -1,7 +1,7 @@
+   Hexedit version 0.9.3 by Adam Rogoyski <apoc@laker.net> Temperanc on EFNet
+   Copyright (C) 1998, 1999 Adam Rogoyski
+ 
+-  --- GNU General Public License Disclamer ---
++  --- GNU General Public License Disclaimer ---
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+@@ -14,7 +14,7 @@
+ 
+         **   THIS IS NOT THE OFFICIAL DOCUMENTATION **
+   I forget to update this file.  The Texinfo or LaTeX documentation is what
+-is really worth reading.  Look in docs/ direcotry.
++is really worth reading.  Look in docs/ directory.
+ 
+ 
+   Hexedit Version 0.9.3 is a full screen text mode Hex editor using the
+@@ -96,8 +96,8 @@ Binary Calculator   Control-/
+        printable characters, even newlines, are represented as "." even
+        in the full screen text mode.
+        NOTE: This only takes a snapshot of the current section, you cannot
+-       use this feature as a fileviewer of text.  It just lets you see
+-       a quick snapshot of what it would like like in text.
++       use this feature as a file viewer of text.  It just lets you see
++       a quick snapshot of what it would look like in text.
+      - Goto Offset command takes input as either Hex (i.e. 0xFF), Octal
+        (i.e. 0377) or Base 10 (i.e. 255).  I know what you're thinking,
+        but no, strtol () does this for you.
+@@ -105,7 +105,7 @@ Binary Calculator   Control-/
+        people are used to vi or emacs.  I personally like how pico is
+        set up.  Any other resemblances to pico are purely my doing.
+      - Year 2000 compliant. =)
+-     - Searching uses the Boyer-Moore search algorith, and the whole
++     - Searching uses the Boyer-Moore search algorithm, and the whole
+        file is in memory, so it's fast.  Real fast.
+      - Changes are highlighted in bold.  If you insert or delete a byte,
+        all bold is removed until you change something else.  This seems 
+@@ -117,7 +117,7 @@ Binary Calculator   Control-/
+        Undo command will revert the byte back to its previous state.
+      - Environment variable HEXEDIT can be used to save your command line
+        options.  Example, export HEXEDIT=-8r would put hexedit into
+-       readonly mode with 8-bit printing on by default.
++       read-only mode with 8-bit printing on by default.
+ 
+ BUGS - DRAWBACKS
+ 
+diff --git a/docs/hexeditor.texi b/docs/hexeditor.texi
+index 4a77975..d985152 100644
+--- a/docs/hexeditor.texi
++++ b/docs/hexeditor.texi
+@@ -109,7 +109,7 @@ write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139,
+ @section Author
+ @strong{[N]Curses Hexedit} was written by Adam Rogoyski@footnote{Email me at
+ apoc@@laker.net}@footnote{There is a picture of me at http://profiles.yahoo.com/rogoyski/}.
+-At the time of writting (December 1998) I am a Sophomore of Computer Science at the University of
++At the time of writing (December 1998) I am a Sophomore of Computer Science at the University of
+ Texas at Austin.  I use Debian GNU/Linux and OpenBSD, I enjoy playing electric guitar, and
+ I currently reside Pflugerville, Texas USA.  My heroes are Richard
+ Stallman, Stevie Ray Vaughan, and Lisa Loeb.
+@@ -283,8 +283,8 @@ Defaults may be specified in the HEXEDIT environment variable, i.e.@*
+ * Undo::			Fixing mistakes.
+ * Searching::			Locating specific strings.
+ * Quit::			Exiting the editor.
+-* Save::			Commiting changes to disk.
+-* Save and Quit::		Commiting changes with exit.
++* Save::			Committing changes to disk.
++* Save and Quit::		Committing changes with exit.
+ * Redraw::			Refreshing the screen.
+ * View as Text::		Take an text snapshot of offset.
+ * Ascii <=> EBCDIC::		Switch between text representations
+@@ -303,8 +303,8 @@ command line:
+    hexedit filename
+ @end example
+ Quite possibly, you may not remember the location of the file you wish to edit, or you
+-may wish to browse over many possible files availible to find the file you are looking
+-for.  Hexedit comes equipted with a full screen file/directory browser which enables you
++may wish to browse over many possible files available to find the file you are looking
++for.  Hexedit comes equipped with a full screen file/directory browser which enables you
+ to specify the file you wish to edit.  Not specifying any file on the command line:
+ @example
+    hexedit
+@@ -316,7 +316,7 @@ that directory for viewing.  Choosing a file will open that file in the editor.
+ 
+ @node Choosing a fixed disk, Windows, Choosing a file, Program Operations
+ @section Choosing a fixed disk.
+-Hexedit, when run in Linux, permits access to read and edit fixed disks (i.e /dev/hda).
++Hexedit, when run in Linux, permits access to read and edit fixed disks (i.e. /dev/hda).
+ Using the @emph{-d} option will allow you to edit a disk.  Currently, the disk can be
+ only up to 4.2 gigs, but this will probably change in a future release.@*
+    By default, editing a disk will put you in read-only mode.  This is for your own
+@@ -331,7 +331,7 @@ on disk since you read it into the editor's buffer.  So be careful if you want t
+ a mounted disk.@*
+    To put this in another way, if you don't know exactly why you would want to use 
+ this option, @emph{Never Use It!}  @strong{IMPORTANT}:  Never use this in conjunction
+-with the @emph{-b} option to buffer the entier file into memory.  I will leave it to
++with the @emph{-b} option to buffer the entire file into memory.  I will leave it to
+ you to think why this would be bad.  
+ 
+ 
+@@ -390,8 +390,8 @@ first column from the left is the base offset@footnote{All offsets are in Hexade
+ which represents the offset of the first byte of that row in the Data column.
+ 
+ The second column is the Data column, where the Hexadecimal representation of
+-each byte of the file is listed.  Each row consists of 16 bytes, seperated into 2
+-columns of 8 bytes, each seperated into columns of 4 bytes.
++each byte of the file is listed.  Each row consists of 16 bytes, separated into 2
++columns of 8 bytes, each separated into columns of 4 bytes.
+ A typical row looks like: (third column not shown)
+ @example
+ 00004280   50 E8 A6 CA@ @ FF FF E8 41@ @ @ CA FF FF 68@ @ 90 F5 04 08
+@@ -465,7 +465,7 @@ octal@footnote{Octal numbers are base8, prefixed by a 0, ex: 0377},
+ or hex@footnote{Hex numbers are base16, prefixed by 0x, ex: 0xFF}.
+ 
+ Note, the default value will be 0,
+-permitting a fast way to jump to the begining of the file.
++permitting a fast way to jump to the beginning of the file.
+ 
+ 
+ @node Editing, Undo, Moving About, Program Operations
+@@ -483,7 +483,7 @@ characters are ignored.
+ In this mode, any printable character may be used to change the current byte.
+ 
+ @subsection Insert
+-Insert allows you to, inplace, insert a new byte of data into the file, thus increasing
++Insert allows you to, in-place, insert a new byte of data into the file, thus increasing
+ the size of the file by one byte.  The new byte is always equal to zero until you modify
+ it.  Insert is done through the @emph{Insert} key or @emph{Control-A}.  Insert is only
+ enabled if you use the @emph{-b} option to buffer the entire file into memory.  This is
+@@ -492,7 +492,7 @@ best of luck to you.  Insert cannot work on disks either.
+ 
+ To simulate appending a byte to the end of the file, Jump to the end of the file,
+ and insert a byte.  This will have pushed the last byte over one.  Copy the value of that
+-byte to the new zero'd byte.  Now zero the last byte.
++byte to the new zeroed byte.  Now zero the last byte.
+ 
+ @subsection Delete
+ Delete allows you to delete the current byte, shifting the remainder of the file back one,
+@@ -513,14 +513,14 @@ To facilitate this, an extensive Undo command has been implemented on your behal
+ @emph{Control-U} Undoes the previous change to the file.  The editor keeps track
+ of all modifications, insertions, and deletions.  What this means is that at any time
+ you can, if you wish, revert the file back to its original state by a series of
+-Undo's.
++undos.
+ 
+ If you do @emph{Control-U} and the last changed byte is currently viewable
+ in the Main Window, then the cursor will relocate to that byte and revert it to its
+ previous state.  If the last changed byte is not currently viewable, the currently
+ viewable area will shift so that the changed byte is viewable.  In other words, you
+ will be relocated to that part of the file, with the cursor on that byte at that 
+-offset.  The Byte WILL NOT be Un-done.  Another @emph{Control-U} will now undo the
++offset.  The byte WILL NOT be undone.  Another @emph{Control-U} will now undo the
+ change@footnote{This is probably worded poorly, but it's easy to see what I mean when
+ you try it}.
+ 
+@@ -543,8 +543,8 @@ while it shows the text representation of those bytes above.  Non printable
+ characters are shown as "." dot.
+ 
+ @subsection Find Next
+-This options allows you to find the next occurence of the previous search (text or
+-Hex).  This option is not availible until after your first search is completed.
++This options allows you to find the next occurrence of the previous search (text or
++Hex).  This option is not available until after your first search is completed.
+ 
+ This options is bound to @emph{Control-N} to allow quickly locating the
+ next match.
+@@ -562,7 +562,7 @@ To save the file at any time with the currently made changes is done with
+ @emph{Control-O}@footnote{On OpenBSD and a few other OS's, This keystroke
+ does not seem to work.  It has something to do with the terminal using it}.
+ The file may be saved over the current file@footnote{This isn't always possible.  One place is
+-in DOS if you try to save over the executable currently being ran}, or you may save the file as
++in DOS if you try to save over the executable currently being run}, or you may save the file as
+ a new or different file.  In the event of an error or inability to save, you will be given
+ the standard@footnote{perror (filename)} error message in the Popup Window.
+ 
+diff --git a/src/asciikey.c b/src/asciikey.c
+index 9da679e..cde9e0a 100644
+--- a/src/asciikey.c
++++ b/src/asciikey.c
+@@ -1,6 +1,6 @@
+ /* asciikeys.c by Adam Rogoyski <apoc@laker.net> Temperanc on EFNet irc
+  * Copyright (C) 1998, 1999 Adam Rogoyski
+- * --- GNU General Public License Disclamer ---
++ * --- GNU General Public License Disclaimer ---
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation; either version 2 of the License, or
+diff --git a/src/calc.c b/src/calc.c
+index b84e33e..479acdf 100644
+--- a/src/calc.c
++++ b/src/calc.c
+@@ -1,6 +1,6 @@
+ /* calc.c by Adam Rogoyski <apoc@laker.net> Temperanc on EFNet irc
+  * Copyright (C) 1998, 1999 Adam Rogoyski
+- * --- GNU General Public License Disclamer ---
++ * --- GNU General Public License Disclaimer ---
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation; either version 2 of the License, or
+diff --git a/src/calckeys.c b/src/calckeys.c
+index 3ac43c2..2b38230 100644
+--- a/src/calckeys.c
++++ b/src/calckeys.c
+@@ -1,6 +1,6 @@
+ /* calckeys.c by Adam Rogoyski <apoc@laker.net> Temperanc on EFNet irc
+  * Copyright (C) 1998, 1999 Adam Rogoyski
+- * --- GNU General Public License Disclamer ---
++ * --- GNU General Public License Disclaimer ---
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation; either version 2 of the License, or
+diff --git a/src/edit.c b/src/edit.c
+index 42cb022..e4aed7a 100644
+--- a/src/edit.c
++++ b/src/edit.c
+@@ -1,6 +1,6 @@
+ /* edit.c by Adam Rogoyski <apoc@laker.net> Temperanc on EFNet irc
+  * Copyright (C) 1998, 1999 Adam Rogoyski
+- * --- GNU General Public License Disclamer ---
++ * --- GNU General Public License Disclaimer ---
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation; either version 2 of the License, or
+@@ -17,7 +17,7 @@
+ 
+ /* The routines in this file are very messy and ugly and not much thought
+  * went into thinking how to minimize the amount of code, I only did it
+- * real fast, making every case I could think of a seperate code block,
++ * real fast, making every case I could think of a separate code block,
+  * so this may be someplace someone may want to improve, especially since
+  * all the hard coded screen positions make it hard to add new viewing
+  * modes.
+diff --git a/src/file.c b/src/file.c
+index df31c95..14a2475 100644
+--- a/src/file.c
++++ b/src/file.c
+@@ -1,6 +1,6 @@
+ /* file.c by Adam Rogoyski <apoc@laker.net> Temperanc on EFNet irc
+  * Copyright (C) 1998, 1999 Adam Rogoyski
+- * --- GNU General Public License Disclamer ---
++ * --- GNU General Public License Disclaimer ---
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation; either version 2 of the License, or
+@@ -271,7 +271,7 @@ fileSelect ()
+          box (wpopup, 0, 0);
+          wmove (wpopup, 1, (FILE_BOX_WIDTH / 2)
+                  - (strlen ("Cannot Change Directory") / 2));
+-         wprintw (wpopup, "Cannot Change Direcotry");
++         wprintw (wpopup, "Cannot Change Directory");
+          wmove (wpopup, FILE_BOX_HEIGHT - 3, (FILE_BOX_WIDTH / 2) -
+                 (strlen (strerror (errno)) + strlen ("Reason: ")) / 2);
+          wprintw (wpopup, "Reason: %s", strerror (errno));
+diff --git a/src/filebuf.c b/src/filebuf.c
+index f346482..2873079 100644
+--- a/src/filebuf.c
++++ b/src/filebuf.c
+@@ -1,6 +1,6 @@
+ /* filebuf.c by Adam Rogoyski <apoc@laker.net> Temperanc on EFNet irc
+  * Copyright (C) 1998, 1999 Adam Rogoyski
+- * --- GNU General Public License Disclamer ---
++ * --- GNU General Public License Disclaimer ---
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation; either version 2 of the License, or
+diff --git a/src/filekeys.c b/src/filekeys.c
+index 7df9b4c..314fffb 100644
+--- a/src/filekeys.c
++++ b/src/filekeys.c
+@@ -1,6 +1,6 @@
+ /* filekeys.c by Adam Rogoyski <apoc@laker.net> Temperanc on EFNet irc
+  * Copyright (C) 1998, 1999 Adam Rogoyski
+- * --- GNU General Public License Disclamer ---
++ * --- GNU General Public License Disclaimer ---
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation; either version 2 of the License, or
+diff --git a/src/hash.c b/src/hash.c
+index 88a131e..36e4575 100644
+--- a/src/hash.c
++++ b/src/hash.c
+@@ -1,6 +1,6 @@
+ /* hash.c by Adam Rogoyski <apoc@laker.net> Temperanc on EFNet irc
+  * Copyright (C) 1998, 1999 Adam Rogoyski
+- * --- GNU General Public License Disclamer ---
++ * --- GNU General Public License Disclaimer ---
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation; either version 2 of the License, or
+diff --git a/src/help.c b/src/help.c
+index 61e62c5..59eebfe 100644
+--- a/src/help.c
++++ b/src/help.c
+@@ -1,6 +1,6 @@
+ /* help.c by Adam Rogoyski <apoc@laker.net> Temperanc on EFNet irc
+  * Copyright (C) 1999 Adam Rogoyski
+- * --- GNU General Public License Disclamer ---
++ * --- GNU General Public License Disclaimer ---
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation; either version 2 of the License, or
+diff --git a/src/hexedit.h b/src/hexedit.h
+index 22e5d6b..b25aea7 100644
+--- a/src/hexedit.h
++++ b/src/hexedit.h
+@@ -3,7 +3,7 @@
+ 
+ /* hexedit.h by Adam Rogoyski <apoc@laker.net> Temperanc on EFNet irc
+  * Copyright (C) 1998, 1999 Adam Rogoyski
+- * --- GNU General Public License Disclamer ---
++ * --- GNU General Public License Disclaimer ---
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation; either version 2 of the License, or
+@@ -157,7 +157,7 @@
+ #define  DEFAULT_READ_BUFFER  0x800     /*  2048 */
+ 
+ 
+-   /* Functions prototypes for functions used througout */
++   /* Functions prototypes for functions used throughout */
+ 
+    /* Functions in misc.c */
+ char *       chompWhiteSpace        (char *);
+diff --git a/src/hexkeys.c b/src/hexkeys.c
+index a2d3d25..4fed38e 100644
+--- a/src/hexkeys.c
++++ b/src/hexkeys.c
+@@ -1,6 +1,6 @@
+ /* hexkeys.c by Adam Rogoyski <apoc@laker.net> Temperanc on EFNet irc
+  * Copyright (C) 1998, 1999 Adam Rogoyski
+- * --- GNU General Public License Disclamer ---
++ * --- GNU General Public License Disclaimer ---
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation; either version 2 of the License, or
+@@ -967,14 +967,14 @@ pageup (void)
+ {
+    unsigned long off = 0;
+    if ((offset & M_0xFFFFFFF0) <= ((MAIN_BOTTOM_LINE) * M_0x10))
+-   /* paged up with offset 0x00 on the screen (begining of file) */
++   /* paged up with offset 0x00 on the screen (beginning of file) */
+    {
+       offset = 0x00 + mapcur (cursor_x);
+       off = 0;
+       cursor_y = MAIN_TOP_LINE;
+    }
+    else
+-   /* not at begining of file */
++   /* not at beginning of file */
+    {
+       offset -= M_0x10 * (MAIN_BOTTOM_LINE);
+       off = offset;
+diff --git a/src/init.c b/src/init.c
+index bf2d76a..a32ea9c 100644
+--- a/src/init.c
++++ b/src/init.c
+@@ -1,6 +1,6 @@
+ /* init.c by Adam Rogoyski <apoc@laker.net> Temperanc on EFNet irc
+  * Copyright (C) 1998, 1999 Adam Rogoyski
+- * --- GNU General Public License Disclamer ---
++ * --- GNU General Public License Disclaimer ---
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation; either version 2 of the License, or
+@@ -80,7 +80,7 @@ init (int argc, char **argv)
+    newlines = NULL;
+    filebuf  = NULL;
+ 
+-      /* process environemnt variable first, then command line options */
++      /* process environment variable first, then command line options */
+ 
+    i = 0;
+    while (*environ)
+@@ -129,7 +129,7 @@ init (int argc, char **argv)
+ 
+                case 'n':
+                case 'N':
+-                  color_term = -1; /* don't use color terminal if availible */
++                  color_term = -1; /* don't use color terminal if available */
+                   break;
+             }
+             ++*environ;
+@@ -342,8 +342,8 @@ init (int argc, char **argv)
+ 
+ 
+ 
+-/* Used to go to the file selection widget continously until a new file
+- * is choses or the user exits.  Returns the name of the new file and
++/* Used to go to the file selection widget continuously until a new file
++ * is chosen or the user exits.  Returns the name of the new file and
+  * sets fp to the new file opened file pointer.  Need to eventually free
+  * this returned value.  This is called outside init.c.  
+  */
+@@ -581,7 +581,7 @@ load_new_file (FILE **fp)
+    UndoStack.base = NULL;
+    UndoStack.top = NULL;
+ 
+-      /* May be comming out of file mode from selection widget. */
++      /* May be coming out of file mode from selection widget. */
+    Globals.mode       = HEX_MODE;
+ 
+ }
+diff --git a/src/main.c b/src/main.c
+index 08cb858..1904989 100644
+--- a/src/main.c
++++ b/src/main.c
+@@ -1,7 +1,7 @@
+ #define MAIN_C
+ /* main.c by Adam Rogoyski <apoc@laker.net> Temperanc on EFNet irc
+  * Copyright (C) 1998, 1999 Adam Rogoyski
+- * --- GNU General Public License Disclamer ---
++ * --- GNU General Public License Disclaimer ---
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation; either version 2 of the License, or
+diff --git a/src/misc.c b/src/misc.c
+index 4768b3f..24068b4 100644
+--- a/src/misc.c
++++ b/src/misc.c
+@@ -1,6 +1,6 @@
+ /* misc.c by Adam Rogoyski <apoc@laker.net> Temperanc on EFNet irc
+  * Copyright (C) 1998, 1999 Adam Rogoyski
+- * --- GNU General Public License Disclamer ---
++ * --- GNU General Public License Disclaimer ---
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation; either version 2 of the License, or
+@@ -402,7 +402,7 @@ usage (char *prog)
+ #endif
+      "  -n, --nocolor           Force Gray scale, no colors.\n"
+      "  -q, --quiet             Quiet Mode, No annoying beeping\n"
+-     "  -r, --readonly          Do not modifying of the file.\n"
++     "  -r, --readonly          Do no modifying of the file.\n"
+      "  -v, --version           Print the version number and exit.\n";
+   printf(usage,
+      VERSION, prog);
+diff --git a/src/print.c b/src/print.c
+index 493f7d8..57b291e 100644
+--- a/src/print.c
++++ b/src/print.c
+@@ -1,6 +1,6 @@
+ /* print.c by Adam Rogoyski <apoc@laker.net> Temperanc on EFNet irc
+  * Copyright (C) 1998, 1999 Adam Rogoyski
+- * --- GNU General Public License Disclamer ---
++ * --- GNU General Public License Disclaimer ---
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation; either version 2 of the License, or
+diff --git a/src/search.c b/src/search.c
+index 8272451..dec3d26 100644
+--- a/src/search.c
++++ b/src/search.c
+@@ -1,6 +1,6 @@
+ /* search.c by Adam Rogoyski <apoc@laker.net> Temperanc on EFNet irc
+  * Copyright (C) 1998, 1999 Adam Rogoyski
+- * --- GNU General Public License Disclamer ---
++ * --- GNU General Public License Disclaimer ---
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation; either version 2 of the License, or
+diff --git a/src/undo.c b/src/undo.c
+index 030cc47..50e64d6 100644
+--- a/src/undo.c
++++ b/src/undo.c
+@@ -1,6 +1,6 @@
+ /* undo.c by Adam Rogoyski <apoc@laker.net> Temperanc on EFNet irc
+  * Copyright (C) 1998, 1999 Adam Rogoyski
+- * --- GNU General Public License Disclamer ---
++ * --- GNU General Public License Disclaimer ---
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation; either version 2 of the License, or
+diff --git a/src/widgets.c b/src/widgets.c
+index d597d46..20073ff 100644
+--- a/src/widgets.c
++++ b/src/widgets.c
+@@ -1,6 +1,6 @@
+ /* widgets.c by Adam Rogoyski <apoc@laker.net> Temperanc on EFNet irc
+  * Copyright (C) 1998, 1999 Adam Rogoyski
+- * --- GNU General Public License Disclamer ---
++ * --- GNU General Public License Disclaimer ---
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation; either version 2 of the License, or
+@@ -184,7 +184,7 @@ stringBox (WINDOW *win, int y, int x, int len, int max, char *sample)
+                   wmove (win, y, oldx - 1);
+                }
+                else
+-               /* at left hand side, not begining of buffer */
++               /* at left hand side, not beginning of buffer */
+                {
+                   i--;
+                   for (n = i; n < len - 1; n++)
+@@ -268,7 +268,7 @@ stringBox (WINDOW *win, int y, int x, int len, int max, char *sample)
+                do_beep ();
+             break;
+          
+-            /* erase whole line and bring cursor back to begining */
++            /* erase whole line and bring cursor back to beginning */
+          case CONTROL_U:
+             memset (str, 0x00, len);
+ 
+diff --git a/src/windows.c b/src/windows.c
+index 4c211c8..9e36bd0 100644
+--- a/src/windows.c
++++ b/src/windows.c
+@@ -1,6 +1,6 @@
+ /* windows.c by Adam Rogoyski <apoc@laker.net> Temperanc on EFNet irc
+  * Copyright (C) 1998, 1999 Adam Rogoyski
+- * --- GNU General Public License Disclamer ---
++ * --- GNU General Public License Disclaimer ---
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation; either version 2 of the License, or
+@@ -321,7 +321,7 @@ popupFileSave (void)
+             if (result < 0)
+                die_horribly (NULL, "ftruncate");
+          }
+-            /* If not, we read it from the old file, make the neccessary
++            /* If not, we read it from the old file, make the necessary
+              * changes, and then write it to the new file (possibly the
+              * same file.
+              */
+@@ -439,7 +439,7 @@ popupFileSave (void)
+ 
+    /* XXX This is really ugly, this needs to be redone eventually.  I 
+     * want to add search/replace type things, but it's too ugly, needs
+-    * to be totaly redone, I don't feel like figuring out how it works. 
++    * to be totally redone, I don't feel like figuring out how it works.
+     * I must have been up really late.
+     */
+ void

@@ -1,0 +1,51 @@
+From: Jake Hilmer <jakob@hilmer.dk>
+Date: Tue, 14 Apr 2009 15:31:00 +0200
+Subject: Fix segfault when searching for text that isn't in the file being
+ viewed.
+
+Description: Fix segfault
+ when searching for text that isn't in the file being viewed.
+Author: Jakob Hilmer <jakob@hilmer.dk>
+Origin: other, https://launchpadlibrarian.net/25448409/ncurses-hexedit.patch
+Bug-Debian: https://bugs.debian.org/536736
+Bug-Ubuntu: https://bugs.launchpad.net/ubuntu/+source/ncurses-hexedit/+bug/122349
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+---
+ src/windows.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
+
+diff --git a/src/windows.c b/src/windows.c
+index d66e05a..f64b790 100644
+--- a/src/windows.c
++++ b/src/windows.c
+@@ -692,20 +692,21 @@ search (int findnext)
+             spot = boyer_moore_search (retr->str, offset + 1,
+                                  last_str_len = retr->len,
+                                  Globals.filesize - offset);
++         if (laststr)
++            free (laststr);
++         laststr = malloc (retr->len + 1);
++         memset (laststr, 0x00, retr->len + 1);
++         memcpy (laststr, retr->str, retr->len);
++         free (retr->str);
++         retr->str = NULL;
++         retr->len = 0;
++
+          if (spot && spot->flag)
+          {
+             offset += spot->offset + 1; /* started search one character
+                                           ahead of offset */
+             cursor_y = 1;
+             cursor_x = mappos (offset & M_0x0F);
+-            if (laststr)
+-               free (laststr);
+-            laststr = malloc (retr->len + 1);
+-            memset (laststr, 0x00, retr->len + 1);
+-            memcpy (laststr, retr->str, retr->len);
+-            free (retr->str);
+-            retr->str = NULL;
+-            retr->len = 0;
+          }
+          else
+          {

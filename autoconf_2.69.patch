@@ -1,0 +1,289 @@
+From: Carlos Maddela <e7appew@gmail.com>
+Date: Sat, 9 Sep 2017 18:26:08 +1000
+Subject: Update autoconf files for version 2.69.
+
+Description: Update autoconf files for version 2.69.
+Author: Carlos Maddela <e7appew@gmail.com>
+Last-Update: 2017-09-09
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+---
+ acconfig.h   |  38 ---------------------
+ configure.ac | 109 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ configure.in | 106 ---------------------------------------------------------
+ 3 files changed, 109 insertions(+), 144 deletions(-)
+ delete mode 100644 acconfig.h
+ create mode 100644 configure.ac
+ delete mode 100644 configure.in
+
+diff --git a/acconfig.h b/acconfig.h
+deleted file mode 100644
+index 4f4e656..0000000
+--- a/acconfig.h
++++ /dev/null
+@@ -1,38 +0,0 @@
+-   /* Name of package */
+-#undef PACKAGE
+-
+-   /* Version of package */
+-#undef VERSION
+-
+-   /* Enable GNU extensions */
+-#undef _GNU_SOURCE
+-
+-   /* Curses library */
+-#undef HAVE_CURSES_H
+-
+-   /* NCurses library */
+-#undef HAVE_NCURSES_H
+-
+-   /* termio */
+-#undef HAVE_TERMIO_H
+-
+-   /* termios */
+-#undef HAVE_TERMIOS_H
+-
+-   /* sys/termio */
+-#undef HAVE_SYS_TERMIO_H
+-
+-   /* sys/termios */
+-#undef HAVE_SYS_TERMIOS_H
+-
+-   /* getopt.h */
+-#undef HAVE_GETOPT_H
+-
+-   /* getopt_long () */
+-#undef HAVE_GETOPT_LONG
+-
+-   /* snprintf () */
+-#undef HAVE_SNPRINTF
+-
+-   /* isprint () */
+-#undef HAVE_ISPRINT
+diff --git a/configure.ac b/configure.ac
+new file mode 100644
+index 0000000..3c63f4d
+--- /dev/null
++++ b/configure.ac
+@@ -0,0 +1,109 @@
++dnl configure.in for hexedit
++dnl April 23rd, 1999 Adam Rogoyski <apoc@laker.net>
++dnl see COPYING for terms of copying under the GNU General Public License
++
++AC_INIT([[[N]] Curses Hexedit],
++        [0.9.7], 
++        [Adam Rogoyski <apoc@laker.net>],
++        [hexedit])
++
++AM_INIT_AUTOMAKE
++AM_CONFIG_HEADER(config.h:config.in)
++
++AC_PROG_CC
++if test "$GCC" = "yes"; then
++  CFLAGS="$CFLAGS -Wall"
++fi
++
++AC_PROG_INSTALL
++
++AC_DEFINE([_GNU_SOURCE], [1], [Enable GNU extensions])
++
++AC_HEADER_STDC
++AC_PROG_GCC_TRADITIONAL
++
++AC_CHECK_HEADERS(ncurses.h)
++if test "$ac_cv_header_ncurses_h" = "no"; then
++  AC_CHECK_HEADERS(curses.h)
++  if test "$ac_cv_header_curses_h" = "no"; then
++    echo "*** Cannot find Curses headers, probably not installed"
++    echo "*** Hexedit will not run without the curses library"
++  fi
++fi
++
++AC_CHECK_HEADERS(fcntl.h getopt.h limits.h sys/ioctl.h unistd.h)
++AC_HEADER_DIRENT
++AC_C_CONST
++AC_STRUCT_TM
++AC_CHECK_FUNCS(snprintf isprint)
++AC_CHECK_FUNCS(getopt_long,AC_DEFINE([HAVE_GETOPT_LONG], [1], [getopt_long ()]))
++
++
++dnl find TIOCGWINSZ if possible
++
++AC_MSG_CHECKING([for TIOCGWINSZ])
++AC_EGREP_CPP(rogoyski_hexedit_termio,
++[
++#include <termio.h>
++#ifdef TIOCGWINSZ
++  rogoyski_hexedit_termio
++#endif
++], hex_termio_h=yes)
++
++if test "$hex_termio_h" = "yes"; then
++  AC_DEFINE([HAVE_TERMIO_H], [1], [termio])
++  AC_MSG_RESULT([yes, found in termio.h])
++else
++
++  AC_EGREP_CPP(rogoyski_hexedit_termios,
++  [
++  #include <termios.h>
++  #ifdef TIOCGWINSZ
++    rogoyski_hexedit_termios
++  #endif
++  ], hex_termios_h=yes)
++
++  if test "$hex_termios_h" = "yes"; then
++    AC_DEFINE([HAVE_TERMIOS_H], [1], [termios])
++    AC_MSG_RESULT([yes, found in termios.h])
++  else
++
++    AC_EGREP_CPP(rogoyski_hexedit_sys_termio,
++    [
++    #include <sys/termio.h>
++    #ifdef TIOCGWINSZ
++      rogoyski_hexedit_sys_termio
++    #endif
++    ], hex_sys_termio_h=yes)
++
++    if test "$hex_sys_termio_h" = "yes"; then
++      AC_DEFINE([HAVE_SYS_TERMIO_H], [1], [sys/termio])
++      AC_MSG_RESULT([yes, found in sys/termio.h])
++    else
++
++      AC_EGREP_CPP(rogoyski_hexedit_sys_termios,
++      [
++      #include <sys/termios.h>
++      #ifdef TIOCGWINSZ
++        rogoyski_hexedit_sys_termios
++      #endif
++      ], hex_sys_termios_h=yes)
++
++      if test "$hex_sys_termios_h" = "yes"; then
++        AC_DEFINE([HAVE_SYS_TERMIOS_H], [1], [sys/termios])
++        AC_MSG_RESULT([yes, found in sys/termios.h])
++      else
++        AC_MSG_RESULT([no])
++      fi
++    fi
++  fi
++fi
++
++AC_CHECK_LIB(ncurses, newwin, ,
++    AC_CHECK_LIB(curses, newwin), ,
++    echo "Hexedit requires the curses library"
++    echo "Ncurses is freely available: ftp://ftp.gnu.org/pub/gnu/"
++    exit 1)
++
++
++AC_OUTPUT(Makefile docs/Makefile gnu/Makefile src/Makefile)
+diff --git a/configure.in b/configure.in
+deleted file mode 100644
+index 429d5e0..0000000
+--- a/configure.in
++++ /dev/null
+@@ -1,106 +0,0 @@
+-dnl configure.in for hexedit
+-dnl April 23rd, 1999 Adam Rogoyski <apoc@laker.net>
+-dnl see COPYING for terms of copying under the GNU General Public License
+-
+-AC_INIT(src/main.c)
+-
+-AM_INIT_AUTOMAKE(hexedit, 0.9.7)
+-AM_CONFIG_HEADER(config.h:config.in)
+-
+-AC_PROG_CC
+-if test "$GCC" = "yes"; then
+-  CFLAGS="$CFLAGS -Wall"
+-fi
+-
+-AC_PROG_INSTALL
+-
+-AC_DEFINE(_GNU_SOURCE)
+-
+-AC_HEADER_STDC
+-AC_PROG_GCC_TRADITIONAL
+-
+-AC_CHECK_HEADERS(ncurses.h)
+-if test "$ac_cv_header_ncurses_h" = "no"; then
+-  AC_CHECK_HEADERS(curses.h)
+-  if test "$ac_cv_header_curses_h" = "no"; then
+-    echo "*** Cannot find Curses headers, probably not installed"
+-    echo "*** Hexedit will not run without the curses library"
+-  fi
+-fi
+-
+-AC_CHECK_HEADERS(fcntl.h getopt.h limits.h sys/ioctl.h unistd.h)
+-AC_HEADER_DIRENT
+-AC_C_CONST
+-AC_STRUCT_TM
+-AC_CHECK_FUNCS(snprintf isprint)
+-AC_CHECK_FUNCS(getopt_long,AC_DEFINE(HAVE_GETOPT_LONG))
+-
+-
+-dnl find TIOCGWINSZ if possible
+-
+-AC_MSG_CHECKING([for TIOCGWINSZ])
+-AC_EGREP_CPP(rogoyski_hexedit_termio,
+-[
+-#include <termio.h>
+-#ifdef TIOCGWINSZ
+-  rogoyski_hexedit_termio
+-#endif
+-], hex_termio_h=yes)
+-
+-if test "$hex_termio_h" = "yes"; then
+-  AC_DEFINE(HAVE_TERMIO_H)
+-  AC_MSG_RESULT([yes, found in termio.h])
+-else
+-
+-  AC_EGREP_CPP(rogoyski_hexedit_termios,
+-  [
+-  #include <termios.h>
+-  #ifdef TIOCGWINSZ
+-    rogoyski_hexedit_termios
+-  #endif
+-  ], hex_termios_h=yes)
+-
+-  if test "$hex_termios_h" = "yes"; then
+-    AC_DEFINE(HAVE_TERMIOS_H)
+-    AC_MSG_RESULT([yes, found in termios.h])
+-  else
+-
+-    AC_EGREP_CPP(rogoyski_hexedit_sys_termio,
+-    [
+-    #include <sys/termio.h>
+-    #ifdef TIOCGWINSZ
+-      rogoyski_hexedit_sys_termio
+-    #endif
+-    ], hex_sys_termio_h=yes)
+-
+-    if test "$hex_sys_termio_h" = "yes"; then
+-      AC_DEFINE(HAVE_SYS_TERMIO_H)
+-      AC_MSG_RESULT([yes, found in sys/termio.h])
+-    else
+-
+-      AC_EGREP_CPP(rogoyski_hexedit_sys_termios,
+-      [
+-      #include <sys/termios.h>
+-      #ifdef TIOCGWINSZ
+-        rogoyski_hexedit_sys_termios
+-      #endif
+-      ], hex_sys_termios_h=yes)
+-
+-      if test "$hex_sys_termios_h" = "yes"; then
+-        AC_DEFINE(HAVE_SYS_TERMIOS_H)
+-        AC_MSG_RESULT([yes, found in sys/termios.h])
+-      else
+-        AC_MSG_RESULT([no])
+-      fi
+-    fi
+-  fi
+-fi
+-
+-AC_CHECK_LIB(ncurses, newwin, ,
+-    AC_CHECK_LIB(curses, newwin), ,
+-    echo "Hexedit requires the curses library"
+-    echo "Ncurses is freely available: ftp://ftp.gnu.org/pub/gnu/"
+-    exit 1)
+-
+-
+-AC_OUTPUT(Makefile docs/Makefile gnu/Makefile src/Makefile)
